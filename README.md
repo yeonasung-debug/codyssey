@@ -157,13 +157,13 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
     기존 Bash를 종료하지 않고 연결만 해제됩니다. 
 
 6-14. Dockerfile 작성 및 이미지 빌드 
-- Dockerfile을 작성하고 내가 만든 HTML 웹페이즈를 포함하는 Docker 이미지를 생성합니다.
-- Dockerfile 작성시 명령어: FROM nginx:alpine -> COPY app/index.html /usr/share/nginx/html/index/html
-- 이미지 빌드시 명령어: docker bulid -t my-web .
+- Dockerfile을 작성하고 내가 만든 HTML 웹페이지를 포함하는 Docker 이미지를 생성합니다.
+- Dockerfile 작성시 명령어: FROM nginx:alpine -> COPY app/index.html /usr/share/nginx/html/index.html
+- 이미지 빌드시 명령어: docker build -t my-web .
 - docker build로 만든 이미지 확인: docker images
 
 6-15. Docker 포트 매핑 및 웹 서버 실행
-- 명령어: docker run -d -p 8080:20 --name my-web-container my-web
+- 명령어: docker run -d -p 8080:80 --name my-web-container my-web
 - 실행결과: my-web 이미지를 이용하여 웹 서버 컨테이너를 정상 실행하였습니다.
 - 검증
     * docker ps 명령어로 컨테이너의 Up상태를 확인하였습니다.
@@ -179,7 +179,7 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
 - 실행 명령어: docker run -d -p 8081:80 --name my-web-bind -v "${PWD}/app:/usr/share/nginx/html" my-web -> docker ps
 - 실행 결과 
     * my-web-bind 컨테이너가 정상 실행되었습니다.
-    * http://localhose:8081에서 HTML웹페이지가 정상적으로 표시되었습니다.
+    * http://localhost:8081에서 HTML웹페이지가 정상적으로 표시되었습니다.
 - 검증
     1. VS Code에서 app/index.html의 내용을 수정하고 저장하였습니다.
     2. http://localhost8080과 http://localhost8081을 각 각 새로 고침하여 비교하였습니다.
@@ -213,7 +213,7 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
     * 검증: docker volume ls 명령어로 볼륨 생성 여부를 확인하였습니다.
 - Docker 볼륨에 데이터 저장
     * 실습 목적: 생성한 볼륨에 데이터를 저장하고 컨테이너의 실행 상태를 확인합니다.
-    * 실행 명령어: docker rum --name volume-test-1 -v study-data:/data ubuntu sh -c "echo saved > /data/note.txt" -> docker ps -a 
+    * 실행 명령어: docker run --name volume-test-1 -v study-data:/data ubuntu sh -c "echo saved > /data/note.txt" -> docker ps -a 
     * 실행 결과: Ubuntu 컨테이너를 이용하여 note.txt 파일을 생성하였고, 파일 저장 작업을 마친 컨테이너가 Exited(0) 상태로 표시되었습니다.
 - 컨테이너 삭제 후 데이터 유지 검증
     * 실습 목적: 컨테이너를 삭제해도 docker볼륨에 저장된 데이터가 유지되는 확인합니다.
@@ -252,7 +252,7 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
     * docker run hello-world 실행 성공
     * docker ps -a에서 Exited(0) 확인
 
-## 8. Linux 파일 및 디렉터리 권한 실흡
+## 8. Linux 파일 및 디렉터리 권한 실헹
 8-1. Ubuntu 컨테이너에서 실습 환경 준비
 - 실습 목적: Ubuntu 컨테이너에서 Linux의 파일 및 디렉터리 권한 변경 방법을 학습합니다.
 - 실행 명령어: docker run --rm -it ubuntu bash -> mkdir /permission-practice -> cd /permission-practice -> touch test.sh -> ls -l test.sh
