@@ -63,7 +63,8 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
 - README.md 수정 내용을 GitHub에 반영하였습니다.
 
 5-4. GitHub 저장소
-- https://github.com/yeonassung-debug/dev-workstation
+- https://github.com/yeonassung-debug/dev-workstation 에서 연습 후 코딧세이에 새롭게 하려고 했으나 시간이 없어 복사해 붙였습니다.
+- https://github.com/yeonasung-debug/codyssey
 
 ## 6. Docker 기본 실습
 6-1. Docker 설치 확인
@@ -276,7 +277,7 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
 
 8-4. 증거
 - Ubuntu컨테이네 접속 및 실습용 파일 생성 화면
-- chmod755와 chmod 644 결과 비교 화면
+- chmod755와 chmod 644 결과 비교 화면 ![Linux 파일 및 디렉터리 권한 변경 결과](evidence/chmod-result.png)
 - 디렉터리 권한 755와 700 결과 비교 화면
 
 ## 9. 실습 증거자료
@@ -302,7 +303,7 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
 
 9-4. Linux 파일 및 디렉터리 권한 실습
 - Ubuntu 컨테이너에서 파일과 디렉터리 생성
-- chmod 755와 644를 이용한 파일 권한 변경 결과
+- chmod 755와 644를 이용한 파일 권한 변경 결과 ![Linux 파일 및 디렉터리 권한 변경](evidence/chmod-result.png)
 - chmod 755와 700을 이용한 디렉터리 권한 변경 결과
 
 ## 10. 학습 내용 정리
