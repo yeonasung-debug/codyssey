@@ -13,8 +13,27 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
 - 원격 저장소: GitHub
 - Docker 버전: 29.9.2
 - Git 버전: 2.56.O.window.4 ![Git 버젼](evidence/git-version.png)
-- PowerShell 버전: PowerShell 7.6 ![파워셀 버젼](evidence/powershell-version.png)
+- PowerShell 버전: PowerShell 7.6 ![파워셀 버젼](evidence/powershell-version.png) 
 
+2-1. 프로젝트 디렉터리 구조 및 설계 이유
+```text
+codyssey/
+|
++-- app/
+|   +-- indext.html
+|
++-- evidence/
+|   +-- 실습 증거 이미지
+|
++-- Dockerfile
++-- hello.txt
++-- README.md
+```
+- 디렉터리 설계 이유
+    * app폴더: 웹페이지 소스 코드를 관리하기 위해 분리했습니다.
+    * evidence 폴더: 실습 증빙 사진을 따로 보관하여 결과를 쉽게 확인하도록 했습니다.
+    * Dockerfile: Docker 이미지 생성 환경을 재현하기 위해 사용합니다.
+    * README.md: 실습 과정과 결과를 기록하여 프로젝트를 이해하기 쉽게 했습니다.
 
 ## 3. 실습내용 
 1. PowerShell을 이용한 프로젝트 폴더 및 파일 생성
@@ -173,6 +192,30 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
     ![Docker  컨테이너 목록 확인](evidence/docker-ps.png) 
 
     ![8080 포트 웹페이지 실행 결과](evidence/localhost-8080.png) 
+- 네트워크 네이스페이스와 포트포워딩: Docker 컨테이너는 네트워크 네이스페이스를 이용하여 독립적인 네트워크 환경을 가집니다. 
+    각 컨테이너는 자체 IP 주소와 네트워크 인터페이스를 사용할 수 있습니다. 포트포어딩은 호스트 컴퓨터의 포트를 컨테이너 내부 포트와
+    연결하는 기능입니다. 실습에서 사용한 -P 8080:80은 호스트의 8080포트를 컨테이너의 80포트에 연결합니다. 따라서 브라우저에서 localhost:8080으로 접속하면 컨테이너의 웹 서버에 접근할 수 있습니다. 
+
+    ```
+    브라우저(localhost:8080)
+        |
+        v
+    호스트 컴퓨터(8080)
+        |
+        V
+    Docker 컨테이너(80)
+        |
+        V
+    Nginx웹 서버
+    ```
+
+- 네트워크 동작 순서
+    1. 브라우저에서 localhost:8080으로 접속합니다.
+    2. 호트트 컴퓨터의 8080 포트로 요정이 전달됩니다.
+    3. Docker가 요청을 컨테이너의 80 포트로 전달합니다.
+    4. 독립된 네트위크 환경의 Nginx 웹 서버가 요정을 처리합니다.
+    5. 웹페이지가 브라우저에 표시됩니다.
+           
 
 6-16. Docker 바인드 마운트 실습
 - 실습 목적: 호스트 컴퓨터의 폴더를 docker 컨테이너에 연겨하고, HTML파일 수정 내용이 반영되는지 확인합니다.
@@ -228,9 +271,31 @@ Git과 GitHub를 이용한 버전 관리를 학습하고, Docker를 이용하여
 - 증거
     * docker 볼륨 생성 및 목록 확인 화면 ![Docker 볼륨 생성 및 목록](evidence/docker-volume1.png)
     * ubuntu컨테이너의 exited(0)상태 확인 화면 ![Docker 볼륨 생성 및 목록](evidence/docker-volume2.png)
-    * 새 컨테이너에서 saved 메세지가 출력된 화면 ![Docker 데이터 영속성 확인](evidence/data-persistance.png)
- 
+    * 새 컨테이너에서 saved 메세지가 출력된 화면 ![Docker 데이터 영속성 확인](evidence/data-persistance.png) 
 
+6-18. Docker 포트 충돌 진단 및 해결
+- 원인: 호스트 컴퓨터의 8080 포트를 다른 프로그램이나 Docker컨테이너가 사용하면 포트 충돌이 발생할 수 있습니다.
+- 해결 방법: 포트를 사용하는 프로세스를 확인한 후 충돌을 해결하거나 다른 포트로 변경합니다. 
+- 첫 번째 컨테이너 실행
+    * 명령어: docker run -d -p 8080:80 --name port-demo-conflict my-web
+    * 결과: 8080 포트에서 정상 실행
+- 포트 충돌 재현
+    * 명령어: docker run -d -p 8080:80 --name port-demo-conflict my-web
+    * 오류: port is already allocated
+    * 원인: 8080 포트를 이미 사용 중이어서 충돌 발생
+- 포트 충돌 해결
+    * 명령어: docker rm port-demo-conflict
+    * 명령어: docker run -d -p 8082:80 --name port-demo-conflict my-web
+    * 결과: 포트를 8082로 변경하여 정상 실행
+- 해결 결과 확인
+    * 명령어: docker ps
+    * 결과: 두 컨테이너 모두 Up상태 확인
+- 충돌 오류: ![포트 충돌 오류](evidence/port-conflict.png)
+- 해결 성공: ![포트 충돌 해결](evidence/port-conflict-solved.png)
+- 포트 충돌 진단 명령어
+    * netstat -ano | findstr :8080 : 8080 포트 사용 여부 및 PID 확인
+    * tasklist /FI "PID eq 1234": 확인한 PID의 프로세스 조회(1234는 실제 PID로 변경)
+    * docker ps: 실행 중인 Docker 컨테이너와 포트 확인
 
 ## 7. 오류 해결 사례(Trouobleshooting)
 사례 1. Docker 명령어 입력 오류
